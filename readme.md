@@ -2,16 +2,16 @@
 ## Installation
 `$ npm install -g hyperapp-cli`
 ## Usage
-### `$ hyperapp-cli new name`
+### `$ hyperapp-cli new APP_NAME`
 
 ### `$ hyperapp-cli (generate | g) `
-`$ hyperapp-cli generate action name`  
-`$ hyperapp-cli generate view name`  
-`$ hyperapp-cli generate page name`  
-`$ hyperapp-cli generate template name`  
-`$ hyperapp-cli generate organism name`  
-`$ hyperapp-cli generate molecule name`  
-`$ hyperapp-cli generate atom name`  
+`$ hyperapp-cli generate action ACTION_NAME`  
+`$ hyperapp-cli generate view VIEW_NAME`  
+`$ hyperapp-cli generate page PAGE_NAME`  
+`$ hyperapp-cli generate template TEMPLATE_NAME`  
+`$ hyperapp-cli generate organism ORGANISMS_NAME`  
+`$ hyperapp-cli generate molecule MOLECULE_NAME`  
+`$ hyperapp-cli generate atom ATOM_NAME`  
 
 
 ## Help
