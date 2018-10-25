@@ -1,37 +1,47 @@
-const clone = (name: string) => {
-  const git = require('simple-git/promise');
-  const chalk = require('chalk');
-  const exec = require('child_process').exec;
-  const remote = `https://github.com/tomoyaf/hyperapp-boilerplate.git`;
-
-  console.log(chalk.green('git clone' + " " + remote + " ./" + name));
-  git().silent(true)
-  .clone(remote, name)
-  .then(() => {
-    console.log('finished');
-    console.log(chalk.green('cd ./' + name + ' && yarn && yarn new && git init'));
-    exec('cd ./' + name + " && yarn && yarn new && git init", (err: any, stdout: any, stderr: any) => {
-    if (err) {
-      console.log(err);
-    }
-    console.log(stdout);
-  });})
-  .catch((err: any) => console.error('failed: ', err));
+interface execInterface {
+  command: string;
+  options?: string[];
+  next?: execInterface;
 };
+const exec = (spawn:any, command: string, options: string[] | undefined, next: execInterface | undefined) => {
+  const chalk = require('chalk');
+  console.log(chalk.green(
+    command + (options !== undefined ? (' ' +  options.join(' ')): '')
+  ));
+  const commandProcess = spawn(command, options, { shell: true});
+  commandProcess.stdout.on('data', (data: any) => {
+    process.stdout.write(data.toString());
+  });
+  commandProcess.stderr.on('data', (data: any) => {
+    process.stdout.write(data.toString());
+  });
+  commandProcess.on('close', (code: any) => {
+    if (code == 0 && next !== undefined){
+      exec(spawn, next.command, next.options, next.next);
+    }
+  });
+}
 
 module.exports = {
   commands() {
-    interface newInterface {
-      name: string;
-    };
+    const chalk = require('chalk');
+    const path = require('path');
+
     return {
-      new({ name }: newInterface): boolean {
-        console.log(name);
-        clone(name);
+      new(argv: any): boolean {
+        const name = argv[1] === undefined ? 'app' : argv[1];
+        console.log(chalk.bold('App Name : ' + name));
+
+        const remote = `https://github.com/tomoyaf/hyperapp-boilerplate.git`;
+        const spawn = require('child_process').spawn;
+        exec(spawn, 'git', ['clone', remote, './' + name], {
+          command: 'cd', options: ['./' + name, '&&', 'yarn', '&&', 'yarn', 'new', '&&', 'git', 'init']
+        });
         return name === undefined;
       },
-      help() {
-        console.log('help me');
+      help(argv: any) {
+        console.log('Usage:')
+        console.log('  hyperapp-cli new APP_NAME');
       }
     }
   }
