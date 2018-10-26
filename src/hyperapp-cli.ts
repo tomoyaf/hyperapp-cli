@@ -27,8 +27,48 @@ module.exports = {
     const chalk = require('chalk');
     const path = require('path');
 
+    const help = (argv: string[]) => {
+      console.log('Usage:')
+      console.log('  hyperapp-cli new APP_NAME');
+    }
+
+    const generate = (argv: string[]) => {
+      const name = argv[2];
+      if (name === undefined) {
+        return  false;
+      }
+
+      const files = require('./files');
+      const create = (kind: string) => {
+        const content = require('./template/' + kind);
+        const err = files.create('./src/' + kind + 's/' + name + ".js", content(name));
+        if (err) {
+          console.log(err);
+        }
+      };
+
+      switch (argv[1]) {
+        case 'view': {
+          const path = './src/Route.js';
+          console.log(path);
+          break;
+        }
+        case 'action':
+          break;
+
+        case 'page':
+        case 'template':
+        case 'organism':
+        case 'molecule':
+        case 'atom':
+          create(argv[1]);
+          break;
+      }
+      return false;
+    }
+
     return {
-      new(argv: any): boolean {
+      new(argv: string[]): boolean {
         const name = argv[1] === undefined ? 'app' : argv[1];
         console.log(chalk.bold('App Name : ' + name));
 
@@ -39,10 +79,10 @@ module.exports = {
         });
         return name === undefined;
       },
-      help(argv: any) {
-        console.log('Usage:')
-        console.log('  hyperapp-cli new APP_NAME');
-      }
+      generate,
+      g: generate,
+      help,
+      h: help
     }
   }
 }

@@ -7,5 +7,7 @@ const argv = require('minimist')(process.argv.slice(2))['_'];
 if (argv[0] === undefined) {
   hyperapp.commands()['help'](argv);
 } else {
-  hyperapp.commands()[argv[0]](argv);
+  if (hyperapp.commands()[argv[0]] !== undefined){
+    hyperapp.commands()[argv[0]](argv);
+  }
 }
